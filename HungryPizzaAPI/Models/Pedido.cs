@@ -8,21 +8,24 @@
 
         public string IdentificadorUnico => $"{Data.ToString("yyyyMMdd")}{Id}";
 
-        public List<Pizza> Pizzas { get; set; }
-        public double ValorTotal => CalcularValorTotal();
+        public ICollection<Pizza> Pizzas { get; set; }
+        public decimal ValorTotal => CalcularValorTotal();
 
-        private double CalcularValorTotal()
+        private decimal CalcularValorTotal()
         {
             if (Pizzas == null || (Pizzas != null && Pizzas.Any()))
             {
                 throw new ArgumentException("Erro de falta de pizzas");
             }
 
-            double valorTotal = Queryable.Average(Pizzas.Select(x => x.PrecoTotal).AsQueryable());
+            decimal valorTotal = Queryable.Average(Pizzas.Select(x => x.PrecoTotal).AsQueryable());
             return valorTotal;
         }
 
-        public Endereco EnderecoEntrega { get; set; }
-        public Cliente ClienteEntrega { get; set; }
+        public int? EnderecoId { get; set; }
+        public Endereco Endereco { get; set; }
+
+        public int? ClienteId { get; set; }
+        public Cliente Cliente { get; set; }
     }
 }

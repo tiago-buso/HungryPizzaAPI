@@ -4,16 +4,16 @@
     {
         public int Id { get; set; }
         public List<Sabores> Sabores { get; set; }
-        public double PrecoTotal => CalcularPrecoTotal();
+        public decimal PrecoTotal => CalcularPrecoTotal();
 
-        private double CalcularPrecoTotal()
+        private decimal CalcularPrecoTotal()
         {
             if (Sabores == null || (Sabores != null && Sabores.Any()))
             {
                 throw new ArgumentException("Erro de falta de sabores");
             }
 
-            double precoTotal = Queryable.Average(Sabores.Select(x => x.Preco).AsQueryable());
+            decimal precoTotal = Queryable.Average(Sabores.Select(x => x.Preco).AsQueryable());
             return precoTotal;
         }
     }
