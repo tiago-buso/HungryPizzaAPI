@@ -30,4 +30,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+DadosTeste.PrepararDadosTeste(app);
+
 app.Run();

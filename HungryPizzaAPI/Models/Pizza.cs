@@ -4,7 +4,7 @@
     {       
 
         public int Id { get; private set; }
-        public IList<PizzaSabor> PizzaSabores { get; private set; }
+        public IList<Sabor> Sabores { get; private set; }
         public decimal PrecoTotal { get; private set; }
 
         public int? PedidoId { get; private set; }
@@ -14,21 +14,21 @@
         {
         }
 
-        public Pizza(IList<PizzaSabor> pizzaSabores, int? pedidoId)
-        {         
-            PizzaSabores = pizzaSabores;
+        public Pizza(IList<Sabor> sabores, int? pedidoId)
+        {
+            Sabores = sabores;
             PrecoTotal = CalcularPrecoTotal();
             PedidoId = pedidoId;            
         }
 
         private decimal CalcularPrecoTotal()
         {
-            if (PizzaSabores == null || (PizzaSabores != null && PizzaSabores.Any()))
+            if (Sabores == null || (Sabores != null && !Sabores.Any()))
             {
                 throw new ArgumentException("Erro de falta de sabores");
             }
 
-            decimal precoTotal = Queryable.Average(PizzaSabores.Select(x => x.Sabor.Preco).AsQueryable());
+            decimal precoTotal = Queryable.Average(Sabores.Select(x => x.Preco).AsQueryable());
             return precoTotal;
         }
     }

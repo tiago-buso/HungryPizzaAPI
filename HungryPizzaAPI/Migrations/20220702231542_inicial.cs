@@ -5,10 +5,41 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HungryPizzaAPI.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Enderecos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Rua = table.Column<string>(type: "VARCHAR(5000)", nullable: false),
+                    CEP = table.Column<string>(type: "VARCHAR(20)", nullable: false),
+                    Cidade = table.Column<string>(type: "VARCHAR(1000)", nullable: false),
+                    Estado = table.Column<string>(type: "VARCHAR(2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enderecos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sabores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "VARCHAR(500)", nullable: false),
+                    Preco = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    EmFalta = table.Column<bool>(type: "BIT", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sabores", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Clientes",
                 columns: table => new
@@ -21,43 +52,12 @@ namespace HungryPizzaAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sabores",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    EmFalta = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sabores", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Enderecos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Rua = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CEP = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Enderecos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Enderecos_Clientes_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "Id");
+                        name: "FK_Clientes_Enderecos_EnderecoId",
+                        column: x => x.EnderecoId,
+                        principalTable: "Enderecos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,6 +67,7 @@ namespace HungryPizzaAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Data = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
                     EnderecoId = table.Column<int>(type: "int", nullable: true),
                     ClienteId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -91,6 +92,7 @@ namespace HungryPizzaAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PrecoTotal = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
                     PedidoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -104,7 +106,7 @@ namespace HungryPizzaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PizzaSabores",
+                name: "PizzaSabor",
                 columns: table => new
                 {
                     PizzasId = table.Column<int>(type: "int", nullable: false),
@@ -112,15 +114,15 @@ namespace HungryPizzaAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PizzaSabores", x => new { x.PizzasId, x.SaboresId });
+                    table.PrimaryKey("PK_PizzaSabor", x => new { x.PizzasId, x.SaboresId });
                     table.ForeignKey(
-                        name: "FK_PizzaSabores_Pizzas_PizzasId",
+                        name: "FK_PizzaSabor_Pizzas_PizzasId",
                         column: x => x.PizzasId,
                         principalTable: "Pizzas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PizzaSabores_Sabores_SaboresId",
+                        name: "FK_PizzaSabor_Sabores_SaboresId",
                         column: x => x.SaboresId,
                         principalTable: "Sabores",
                         principalColumn: "Id",
@@ -128,11 +130,10 @@ namespace HungryPizzaAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enderecos_ClienteId",
-                table: "Enderecos",
-                column: "ClienteId",
-                unique: true,
-                filter: "[ClienteId] IS NOT NULL");
+                name: "IX_Clientes_EnderecoId",
+                table: "Clientes",
+                column: "EnderecoId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_ClienteId",
@@ -150,15 +151,15 @@ namespace HungryPizzaAPI.Migrations
                 column: "PedidoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PizzaSabores_SaboresId",
-                table: "PizzaSabores",
+                name: "IX_PizzaSabor_SaboresId",
+                table: "PizzaSabor",
                 column: "SaboresId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PizzaSabores");
+                name: "PizzaSabor");
 
             migrationBuilder.DropTable(
                 name: "Pizzas");
@@ -170,10 +171,10 @@ namespace HungryPizzaAPI.Migrations
                 name: "Pedidos");
 
             migrationBuilder.DropTable(
-                name: "Enderecos");
+                name: "Clientes");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Enderecos");
         }
     }
 }

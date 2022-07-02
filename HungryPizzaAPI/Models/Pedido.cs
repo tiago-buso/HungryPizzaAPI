@@ -4,9 +4,7 @@
     {
         public int Id { get; private set; }
 
-        public DateTime Data { get; private set; }
-
-        public string IdentificadorUnico { get; private set; } 
+        public DateTime Data { get; private set; }        
 
         public ICollection<Pizza> Pizzas { get; private set; }
         public decimal ValorTotal { get; private set; }       
@@ -21,27 +19,18 @@
         {
         }
 
-        public Pedido(int id, DateTime data, string identificadorUnico, ICollection<Pizza> pizzas, decimal valorTotal, int? enderecoId, Endereco endereco, int? clienteId, Cliente cliente)
-        {
-            Id = id;
-            Data = data;
-            IdentificadorUnico = identificadorUnico;
+        public Pedido(DateTime data, ICollection<Pizza> pizzas, int? enderecoId, int? clienteId)
+        {            
+            Data = data;            
             Pizzas = pizzas;
-            ValorTotal = valorTotal;
-            EnderecoId = enderecoId;
-            Endereco = endereco;
-            ClienteId = clienteId;
-            Cliente = cliente;
-        }
-
-        public string ObteridentificadorUnico()
-        {
-            return $"{Data.ToString("yyyyMMdd")}{Id}";
+            ValorTotal = CalcularValorTotal();
+            EnderecoId = enderecoId;          
+            ClienteId = clienteId;          
         }
 
         private decimal CalcularValorTotal()
         {
-            if (Pizzas == null || (Pizzas != null && Pizzas.Any()))
+            if (Pizzas == null || (Pizzas != null && !Pizzas.Any()))
             {
                 throw new ArgumentException("Erro de falta de pizzas");
             }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HungryPizzaAPI.Migrations
 {
     [DbContext(typeof(APIDbContext))]
-    [Migration("20220702174020_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220702231542_inicial")]
+    partial class inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,9 @@ namespace HungryPizzaAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
+
                     b.ToTable("Clientes", (string)null);
                 });
 
@@ -54,30 +57,23 @@ namespace HungryPizzaAPI.Migrations
 
                     b.Property<string>("CEP")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(20)");
 
                     b.Property<string>("Cidade")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
+                        .HasColumnType("VARCHAR(1000)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(2)");
 
                     b.Property<string>("Rua")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(5000)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId")
-                        .IsUnique()
-                        .HasFilter("[ClienteId] IS NOT NULL");
-
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
                 });
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Pedido", b =>
@@ -97,13 +93,16 @@ namespace HungryPizzaAPI.Migrations
                     b.Property<int?>("EnderecoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("NUMERIC(4,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("EnderecoId");
 
-                    b.ToTable("Pedidos");
+                    b.ToTable("Pedidos", (string)null);
                 });
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Pizza", b =>
@@ -117,14 +116,17 @@ namespace HungryPizzaAPI.Migrations
                     b.Property<int?>("PedidoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PrecoTotal")
+                        .HasColumnType("NUMERIC(4,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PedidoId");
 
-                    b.ToTable("Pizzas");
+                    b.ToTable("Pizzas", (string)null);
                 });
 
-            modelBuilder.Entity("HungryPizzaAPI.Models.Sabores", b =>
+            modelBuilder.Entity("HungryPizzaAPI.Models.Sabor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,20 +136,22 @@ namespace HungryPizzaAPI.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(500)");
 
                     b.Property<bool>("EmFalta")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(false);
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("NUMERIC(4,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sabores");
+                    b.ToTable("Sabores", (string)null);
                 });
 
-            modelBuilder.Entity("PizzaSabores", b =>
+            modelBuilder.Entity("PizzaSabor", b =>
                 {
                     b.Property<int>("PizzasId")
                         .HasColumnType("int");
@@ -159,26 +163,28 @@ namespace HungryPizzaAPI.Migrations
 
                     b.HasIndex("SaboresId");
 
-                    b.ToTable("PizzaSabores");
+                    b.ToTable("PizzaSabor");
                 });
 
-            modelBuilder.Entity("HungryPizzaAPI.Models.Endereco", b =>
+            modelBuilder.Entity("HungryPizzaAPI.Models.Cliente", b =>
                 {
-                    b.HasOne("HungryPizzaAPI.Models.Cliente", "Cliente")
-                        .WithOne("Endereco")
-                        .HasForeignKey("HungryPizzaAPI.Models.Endereco", "ClienteId");
+                    b.HasOne("HungryPizzaAPI.Models.Endereco", "Endereco")
+                        .WithOne("Cliente")
+                        .HasForeignKey("HungryPizzaAPI.Models.Cliente", "EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Cliente");
+                    b.Navigation("Endereco");
                 });
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Pedido", b =>
                 {
                     b.HasOne("HungryPizzaAPI.Models.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("Pedidos")
                         .HasForeignKey("ClienteId");
 
                     b.HasOne("HungryPizzaAPI.Models.Endereco", "Endereco")
-                        .WithMany()
+                        .WithMany("Pedidos")
                         .HasForeignKey("EnderecoId");
 
                     b.Navigation("Cliente");
@@ -188,12 +194,14 @@ namespace HungryPizzaAPI.Migrations
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Pizza", b =>
                 {
-                    b.HasOne("HungryPizzaAPI.Models.Pedido", null)
+                    b.HasOne("HungryPizzaAPI.Models.Pedido", "Pedido")
                         .WithMany("Pizzas")
                         .HasForeignKey("PedidoId");
+
+                    b.Navigation("Pedido");
                 });
 
-            modelBuilder.Entity("PizzaSabores", b =>
+            modelBuilder.Entity("PizzaSabor", b =>
                 {
                     b.HasOne("HungryPizzaAPI.Models.Pizza", null)
                         .WithMany()
@@ -201,7 +209,7 @@ namespace HungryPizzaAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HungryPizzaAPI.Models.Sabores", null)
+                    b.HasOne("HungryPizzaAPI.Models.Sabor", null)
                         .WithMany()
                         .HasForeignKey("SaboresId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -210,8 +218,15 @@ namespace HungryPizzaAPI.Migrations
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Cliente", b =>
                 {
-                    b.Navigation("Endereco")
+                    b.Navigation("Pedidos");
+                });
+
+            modelBuilder.Entity("HungryPizzaAPI.Models.Endereco", b =>
+                {
+                    b.Navigation("Cliente")
                         .IsRequired();
+
+                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("HungryPizzaAPI.Models.Pedido", b =>

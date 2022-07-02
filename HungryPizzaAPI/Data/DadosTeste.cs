@@ -1,4 +1,5 @@
 ﻿using HungryPizzaAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HungryPizzaAPI.Data
 {
@@ -15,32 +16,61 @@ namespace HungryPizzaAPI.Data
 
         private static void InserirDadosTeste(APIDbContext context)
         {
-            InserirDadosTesteSabores(context);
+            AplicarMigrations(context);
+            InserirDadosTesteSaboresEPizzas(context);
             InserirDadosTesteEnderecos(context);
             InserirDadosTesteClientes(context);
+            InserirDadosTestePedidos(context);
         }
 
-        private static void InserirDadosTesteSabores(APIDbContext context)
+        private static void AplicarMigrations(APIDbContext context)
+        {
+            Console.WriteLine("--> Tentando aplicar as migrações ...");
+
+            try
+            {
+                context.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Não conseguiu aplicar as migrações {ex.Message}");
+            }
+        }
+
+        private static void InserirDadosTesteSaboresEPizzas(APIDbContext context)
         {
             if (!context.Sabores.Any())
             {
-                Console.WriteLine("--> Inserindo dados teste de Sabores...");
+                Console.WriteLine("--> Inserindo dados teste de sabores e pizzas...");
+
+                Sabor tresQueijos = new Sabor(descricao: "3 Queijos", preco: 50M, emFalta: false);
+                Sabor frangoReq = new Sabor(descricao: "Frango com requeijão", preco: 59.99M, emFalta: false);
+                Sabor mussarela = new Sabor(descricao: "Mussarela", preco: 42.50M, emFalta: false);
+                Sabor calabresa = new Sabor(descricao: "Calabresa", preco: 42.50M, emFalta: false);
+                Sabor pepperoni = new Sabor(descricao: "Pepperoni", preco: 55M, emFalta: true);
+                Sabor portuguesa = new Sabor(descricao: "Portuguesa", preco: 45M, emFalta: true);
+                Sabor veggie = new Sabor(descricao: "Veggie", preco: 59.99M, emFalta: false);
+
+
+                context.AddRange(
+                            new Pizza(sabores: new List<Sabor> { tresQueijos, frangoReq }, pedidoId: null),
+                            new Pizza(sabores: new List<Sabor> { mussarela }, pedidoId: null),
+                            new Pizza(sabores: new List<Sabor> { calabresa }, pedidoId: null),
+                            new Pizza(sabores: new List<Sabor> { tresQueijos, calabresa }, pedidoId: null),
+                            new Pizza(sabores: new List<Sabor> { calabresa }, pedidoId: null)
+                        );
 
                 context.Sabores.AddRange(
-                    new Sabor(descricao: "3 Queijos", preco: 50M, emFalta: false),
-                    new Sabor(descricao: "Frango com requeijão", preco: 59.99M, emFalta: false ),
-                    new Sabor(descricao: "Mussarela", preco: 42.50M, emFalta: false ),
-                    new Sabor(descricao: "Calabresa", preco: 42.50M, emFalta: false ),
-                    new Sabor(descricao: "Pepperoni", preco: 55M, emFalta: true ),
-                    new Sabor(descricao: "Portuguesa", preco: 45M, emFalta: true ),
-                    new Sabor(descricao: "Veggie", preco: 59.99M, emFalta: false )
-                    );
+                    pepperoni,
+                    portuguesa,
+                    veggie
+                );
 
                 context.SaveChanges();
             }
             else
             {
-                Console.WriteLine("--> Já existem dados de sabores no banco");
+                Console.WriteLine("--> Já existem dados de sabores e pizzas no banco");
             }
         }
 
@@ -48,7 +78,7 @@ namespace HungryPizzaAPI.Data
         {
             if (!context.Enderecos.Any())
             {
-                Console.WriteLine("--> Inserindo dados teste de Endereços...");
+                Console.WriteLine("--> Inserindo dados teste de endereços...");
 
                 context.Enderecos.AddRange(
                     new Endereco(rua: "Rua Teste 1", cep: "00000-000", cidade: "São Paulo", estado: "SP"),
@@ -70,12 +100,12 @@ namespace HungryPizzaAPI.Data
         {
             if (!context.Clientes.Any())
             {
-                Console.WriteLine("--> Inserindo dados teste de Clientes...");
+                Console.WriteLine("--> Inserindo dados teste de clientes...");
 
                 context.Clientes.AddRange(
                     new Cliente(nome: "Cliente Teste 1", enderecoId: 1),
                     new Cliente(nome: "Cliente Teste 2", enderecoId: 2),
-                    new Cliente(nome: "Cliente Teste 3", enderecoId: 3)                   
+                    new Cliente(nome: "Cliente Teste 3", enderecoId: 3)
                     );
 
                 context.SaveChanges();
@@ -86,24 +116,26 @@ namespace HungryPizzaAPI.Data
             }
         }
 
-        //private static void InserirDadosTestePizzas(APIDbContext context)
-        //{
-        //    if (!context.Pizzas.Any())
-        //    {
-        //        Console.WriteLine("--> Inserindo dados teste de Pizzas...");
+        private static void InserirDadosTestePedidos(APIDbContext context)
+        {
+            if (!context.Pedidos.Any())
+            {
+                Console.WriteLine("--> Inserindo dados teste de pedidos...");
 
-        //        context.Pizzas.AddRange(
-        //            new Pizzas(),
-        //            new Pizzas(),
-        //            new Pizzas()
-        //            );
+                var pizzas = context.Pizzas.ToList();
 
-        //        context.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("--> Já existem dados de clientes no banco");
-        //    }
-        //}
+                context.Pedidos.AddRange(
+                    new Pedido(data: DateTime.Now, pizzas: pizzas.Where(x => x.Id == 1).ToList(), enderecoId: 4, clienteId: null),
+                    new Pedido(data: DateTime.Now, pizzas: pizzas.Where(x => x.Id >= 2 && x.Id <= 3).ToList(), enderecoId: null, clienteId: 1),
+                    new Pedido(data: DateTime.Now, pizzas: pizzas.Where(x => x.Id >= 4).ToList(), enderecoId: null, clienteId: 2)
+                    );
+
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("--> Já existem dados de pedidos no banco");
+            }
+        }
     }
 }

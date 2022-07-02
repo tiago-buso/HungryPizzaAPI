@@ -14,7 +14,7 @@ namespace HungryPizzaAPI.Data.Configuracaoes
 
             builder.HasOne(c => c.Endereco)
                 .WithOne(e => e.Cliente)
-                .HasForeignKey<Endereco>(c => c.ClienteId);
+                .HasForeignKey<Cliente>(c => c.EnderecoId);
 
         }
     }

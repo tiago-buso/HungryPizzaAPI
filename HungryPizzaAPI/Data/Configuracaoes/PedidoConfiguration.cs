@@ -10,18 +10,16 @@ namespace HungryPizzaAPI.Data.Configuracaoes
         {
             builder.ToTable("Pedidos");
             builder.HasKey(p => p.Id);
-            builder.Property(p => p.Data).HasColumnType("datetime2").IsRequired();
-            builder.Property(p => p.IdentificadorUnico).HasColumnType("VARCHAR(50)").IsRequired();
+            builder.Property(p => p.Data).HasColumnType("datetime2").IsRequired();            
             builder.Property(p => p.ValorTotal).HasColumnType("NUMERIC(4, 2)").IsRequired();
-
 
             builder.HasOne<Endereco>(p => p.Endereco)
            .WithMany(e => e.Pedidos)
-           .HasForeignKey(p => p.EnderecoId);
+           .HasForeignKey(p => p.EnderecoId).IsRequired(false);
 
             builder.HasOne<Cliente>(p => p.Cliente)
            .WithMany(e => e.Pedidos)
-           .HasForeignKey(p => p.ClienteId);
+           .HasForeignKey(p => p.ClienteId).IsRequired(false);
         }
     }
 }

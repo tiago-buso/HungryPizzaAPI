@@ -15,7 +15,7 @@ namespace HungryPizzaAPI.Data.Configuracaoes
 
             builder.HasOne<Pedido>(pi => pi.Pedido)
            .WithMany(pe => pe.Pizzas)
-           .HasForeignKey(pi => pi.PedidoId);
+           .HasForeignKey(pi => pi.PedidoId).IsRequired(false);
         }
     }
 }

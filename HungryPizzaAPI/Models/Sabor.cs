@@ -10,7 +10,7 @@
        
         public bool EmFalta { get; private set; } = false;
 
-        public IList<PizzaSabor> PizzaSabores { get; private set; }
+        public IList<Pizza> Pizzas { get; private set; }
 
         public Sabor()
         {
