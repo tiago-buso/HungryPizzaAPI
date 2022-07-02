@@ -16,7 +16,8 @@ namespace HungryPizzaAPI.Data
         private static void InserirDadosTeste(APIDbContext context)
         {
             InserirDadosTesteSabores(context);
-
+            InserirDadosTesteEnderecos(context);
+            InserirDadosTesteClientes(context);
         }
 
         private static void InserirDadosTesteSabores(APIDbContext context)
@@ -26,13 +27,13 @@ namespace HungryPizzaAPI.Data
                 Console.WriteLine("--> Inserindo dados teste de Sabores...");
 
                 context.Sabores.AddRange(
-                    new Sabores() { Descricao = "3 Queijos", Preco = 50M, EmFalta = false },
-                    new Sabores() { Descricao = "Frango com requeijão", Preco = 59.99M, EmFalta = false },
-                    new Sabores() { Descricao = "Mussarela", Preco = 42.50M, EmFalta = false },
-                    new Sabores() { Descricao = "Calabresa", Preco = 42.50M, EmFalta = false },
-                    new Sabores() { Descricao = "Pepperoni", Preco = 55M, EmFalta = true },
-                    new Sabores() { Descricao = "Portuguesa", Preco = 45M, EmFalta = true },
-                    new Sabores() { Descricao = "Veggie", Preco = 59.99M, EmFalta = false }
+                    new Sabor(descricao: "3 Queijos", preco: 50M, emFalta: false),
+                    new Sabor(descricao: "Frango com requeijão", preco: 59.99M, emFalta: false ),
+                    new Sabor(descricao: "Mussarela", preco: 42.50M, emFalta: false ),
+                    new Sabor(descricao: "Calabresa", preco: 42.50M, emFalta: false ),
+                    new Sabor(descricao: "Pepperoni", preco: 55M, emFalta: true ),
+                    new Sabor(descricao: "Portuguesa", preco: 45M, emFalta: true ),
+                    new Sabor(descricao: "Veggie", preco: 59.99M, emFalta: false )
                     );
 
                 context.SaveChanges();
@@ -45,14 +46,16 @@ namespace HungryPizzaAPI.Data
 
         private static void InserirDadosTesteEnderecos(APIDbContext context)
         {
-            if (!context.Sabores.Any())
+            if (!context.Enderecos.Any())
             {
                 Console.WriteLine("--> Inserindo dados teste de Endereços...");
 
                 context.Enderecos.AddRange(
-                    new Endereco() { Rua = "Rua Teste 1", CEP = "00000-000", Cidade = "São Paulo", Estado = "SP"},
-                    new Endereco() { Rua = "Rua Teste 2", CEP = "11111-111", Cidade = "São Paulo", Estado = "SP" },
-                    new Endereco() { Rua = "Rua Teste 3", CEP = "22222-222", Cidade = "São Paulo", Estado = "SP" }                    
+                    new Endereco(rua: "Rua Teste 1", cep: "00000-000", cidade: "São Paulo", estado: "SP"),
+                    new Endereco(rua: "Rua Teste 2", cep: "11111-111", cidade: "São Paulo", estado: "SP"),
+                    new Endereco(rua: "Rua Teste 3", cep: "22222-222", cidade: "São Paulo", estado: "SP"),
+                    new Endereco(rua: "Rua Teste 4", cep: "44444-444", cidade: "São Paulo", estado: "SP"),
+                    new Endereco(rua: "Rua Teste 5", cep: "55555-555", cidade: "São Paulo", estado: "SP")
                     );
 
                 context.SaveChanges();
@@ -62,5 +65,45 @@ namespace HungryPizzaAPI.Data
                 Console.WriteLine("--> Já existem dados de endereços no banco");
             }
         }
+
+        private static void InserirDadosTesteClientes(APIDbContext context)
+        {
+            if (!context.Clientes.Any())
+            {
+                Console.WriteLine("--> Inserindo dados teste de Clientes...");
+
+                context.Clientes.AddRange(
+                    new Cliente(nome: "Cliente Teste 1", enderecoId: 1),
+                    new Cliente(nome: "Cliente Teste 2", enderecoId: 2),
+                    new Cliente(nome: "Cliente Teste 3", enderecoId: 3)                   
+                    );
+
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("--> Já existem dados de clientes no banco");
+            }
+        }
+
+        //private static void InserirDadosTestePizzas(APIDbContext context)
+        //{
+        //    if (!context.Pizzas.Any())
+        //    {
+        //        Console.WriteLine("--> Inserindo dados teste de Pizzas...");
+
+        //        context.Pizzas.AddRange(
+        //            new Pizzas(),
+        //            new Pizzas(),
+        //            new Pizzas()
+        //            );
+
+        //        context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("--> Já existem dados de clientes no banco");
+        //    }
+        //}
     }
 }

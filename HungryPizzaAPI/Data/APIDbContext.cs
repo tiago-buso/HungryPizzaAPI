@@ -9,11 +9,12 @@ namespace HungryPizzaAPI.Data
         {
         }
 
-        public DbSet<Sabores> Sabores { get; set; }
+        public DbSet<Sabor> Sabores { get; set; }
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<PizzaSabor> PizzaSabores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
