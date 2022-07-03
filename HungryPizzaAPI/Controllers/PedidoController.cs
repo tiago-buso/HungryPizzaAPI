@@ -1,4 +1,5 @@
 ﻿using HungryPizzaAPI.Data;
+using HungryPizzaAPI.Models.Dominios;
 using HungryPizzaAPI.Models.DTOs;
 using HungryPizzaAPI.Models.Persistencias;
 using HungryPizzaAPI.Repositories;
@@ -15,12 +16,14 @@ namespace HungryPizzaAPI.Controllers
         private readonly IClienteRepository _clienteRepository;      
         private readonly IEnderecoRepository _enderecoRepository;
         private readonly IPedidoService _pedidoService;
+        private readonly IPizzaService _pizzaService;
 
-        public PedidoController(IClienteRepository clienteRepository, IEnderecoRepository enderecoRepository, IPedidoService pedidoService)
+        public PedidoController(IClienteRepository clienteRepository, IEnderecoRepository enderecoRepository, IPedidoService pedidoService, IPizzaService pizzaService)
         {
             _clienteRepository = clienteRepository;
             _enderecoRepository = enderecoRepository;
             _pedidoService = pedidoService;
+            _pizzaService = pizzaService;
         }
 
         [HttpGet]
@@ -47,10 +50,9 @@ namespace HungryPizzaAPI.Controllers
 
             return Ok(pedidos);
         }        
-
-        //TODO: post - lista de ids de sabores, id do cliente, id do endereco -> serviço para montar o Pedido, que envolve montar antes a Pizza (criar o serviço da pizza)
+                
         [HttpPost]
-        public async Task<ActionResult<int>> CriarPedido(List<int> saboresIds, int? clienteId, int? enderecoId)
+        public async Task<ActionResult<int>> CriarPedido(List<PizzaDTO> pizzasDTOs, int? clienteId, int? enderecoId)
         {
             if (!clienteId.HasValue && !enderecoId.HasValue)
             {
@@ -77,7 +79,29 @@ namespace HungryPizzaAPI.Controllers
                 }
             }
 
-            return Ok();
+            List<Pizza> pizzas = new List<Pizza>();
+
+            try
+            {
+                pizzas = await _pizzaService.MontarPizzas(pizzasDTOs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao montar as pizzas: {ex.Message}");
+            }
+
+            int pedidoId = 0;
+
+            try
+            {
+                pedidoId = await _pedidoService.CriarPedido(data: DateTime.Now, pizzas: pizzas, enderecoId: enderecoId, clienteId: clienteId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao criar o pedido: {ex.Message}");
+            }
+
+            return Ok(pedidoId);
             
         }
     }

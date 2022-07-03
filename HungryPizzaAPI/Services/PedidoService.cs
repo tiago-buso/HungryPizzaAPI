@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HungryPizzaAPI.Models.Dominios;
 using HungryPizzaAPI.Models.DTOs;
 using HungryPizzaAPI.Models.Persistencias;
 using HungryPizzaAPI.Repositories;
@@ -26,6 +27,35 @@ namespace HungryPizzaAPI.Services
             }
 
             return null;
+        }
+
+        public async Task<int> CriarPedido(DateTime data, List<Pizza> pizzas, int? enderecoId, int? clienteId)
+        {
+            int pedidoId = 0;
+
+            Pedido pedido = MontarPedido(data: data, pizzas: pizzas, enderecoId: enderecoId, clienteId: clienteId);
+
+            if (pedido != null)
+            {
+                PedidoPersistencia pedidoPersistencia = _mapper.Map<PedidoPersistencia>(pedido);
+                pedidoId = await _pedidoRepository.CriarPedido(pedidoPersistencia); 
+            }
+
+            return pedidoId;
+        }
+
+        private Pedido MontarPedido(DateTime data, List<Pizza> pizzas, int? enderecoId, int? clienteId)
+        {
+            Pedido pedido = new Pedido(data: data, pizzas: pizzas, enderecoId: enderecoId, clienteId: clienteId);
+
+            if (!pedido.IsValid)
+            {
+                throw new Exception(String.Join(", ", pedido.Notifications.ToList().Select(x => x.Message).ToArray()));
+            }
+            else
+            {
+                return pedido;
+            }
         }
     }
 }

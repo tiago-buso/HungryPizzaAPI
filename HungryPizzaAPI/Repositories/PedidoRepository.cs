@@ -21,6 +21,15 @@ namespace HungryPizzaAPI.Repositories
             }
 
             _context.Pedidos.Add(pedido);
+
+            foreach (var pizza in pedido.Pizzas)
+            {
+                foreach(var sabor in pizza.Sabores)
+                {
+                    _context.Entry(sabor).State = EntityState.Unchanged;
+                }
+            }
+            
             await _context.SaveChangesAsync();
 
             return pedido.Id;

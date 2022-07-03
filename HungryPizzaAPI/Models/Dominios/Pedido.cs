@@ -60,9 +60,9 @@ namespace HungryPizzaAPI.Models.Dominios
 
         private void CalcularValorTotal(ICollection<Pizza> pizzas)
         {
-            if (pizzas == null || (pizzas != null && !pizzas.Any()))
+            if (pizzas != null && pizzas.Any())
             {
-                ValorTotal = Queryable.Sum(Pizzas.Select(x => x.PrecoTotal).AsQueryable());
+                ValorTotal = Queryable.Sum(pizzas.Select(x => x.PrecoTotal).AsQueryable());
             }
         }
 

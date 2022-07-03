@@ -47,7 +47,7 @@ namespace HungryPizzaAPI.Models.Dominios
         }
         public void CalcularPrecoTotal(IList<Sabor> sabores)
         {
-            if (sabores == null || (sabores != null && !sabores.Any()))
+            if (sabores != null && sabores.Any())
             {
                 PrecoTotal = Queryable.Average(sabores.Select(x => x.Preco).AsQueryable());
             }

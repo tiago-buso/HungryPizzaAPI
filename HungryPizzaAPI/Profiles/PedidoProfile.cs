@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HungryPizzaAPI.Models.Dominios;
 using HungryPizzaAPI.Models.DTOs;
 using HungryPizzaAPI.Models.Persistencias;
 
@@ -8,14 +9,10 @@ namespace HungryPizzaAPI.Profiles
     {
         public PedidoProfile()
         {
-            // Source - Targert
+            // Source - Target
 
             CreateMap<PedidoPersistencia, PedidoDTO>();
-         
-            //CreateMap<Platform, GrpcPlatformModel>()
-            //    .ForMember(dest => dest.PlatformId, opt => opt.MapFrom(src => src.Id))
-            //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            //    .ForMember(dest => dest.Publisher, opt => opt.MapFrom(src => src.Publisher));
+            CreateMap<Pedido, PedidoPersistencia>();                   
         }
     }
 }

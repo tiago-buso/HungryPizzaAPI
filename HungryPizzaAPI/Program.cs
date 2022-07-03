@@ -18,10 +18,14 @@ builder.Services.AddDbContext<APIDbContext>(options =>
 });
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<ISaboresService, SaboresService>();
+builder.Services.AddScoped<IPizzaService, PizzaService>();
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<ISaborRepository, SaborRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
