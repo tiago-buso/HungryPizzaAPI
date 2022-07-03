@@ -49,8 +49,8 @@ namespace HungryPizzaAPI.Controllers
             List<PedidoDTO> pedidos = await _pedidoService.SelecionarPedidosPaginadosPorClienteOrdenadosDataDesc(clienteId: clienteId, skip: skip, take: take);
 
             return Ok(pedidos);
-        }        
-                
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> CriarPedido(List<PizzaDTO> pizzasDTOs, int? clienteId, int? enderecoId)
         {
@@ -67,7 +67,7 @@ namespace HungryPizzaAPI.Controllers
                 {
                     return BadRequest("Não foi encontrado um cliente com esse clienteId.");
                 }
-            }            
+            }
 
             if (enderecoId.HasValue)
             {
@@ -77,6 +77,11 @@ namespace HungryPizzaAPI.Controllers
                 {
                     return BadRequest("Não foi encontrado um endereço com esse enderecoId.");
                 }
+            }
+
+            if (clienteId.HasValue && enderecoId.HasValue)
+            {
+                return BadRequest("Não é possível criar esse pedido, passe ou um cliente ou um endereço, não passe os dois.");
             }
 
             List<Pizza> pizzas = new List<Pizza>();
