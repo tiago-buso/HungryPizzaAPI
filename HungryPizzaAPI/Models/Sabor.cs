@@ -1,6 +1,8 @@
-﻿namespace HungryPizzaAPI.Models
+﻿using Flunt.Notifications;
+
+namespace HungryPizzaAPI.Models
 {
-    public class Sabor
+    public class Sabor : Notifiable<Notification>
     {   
         public int Id { get; private set; }
       
@@ -17,10 +19,37 @@
         }
 
         public Sabor(string descricao, decimal preco, bool emFalta)
-        {          
-            Descricao = descricao;
-            Preco = preco;
-            EmFalta = emFalta;           
+        {
+            ValidarDescricao(descricao);
+            ValidarPreco(preco);
+
+            if (this.IsValid)
+            {
+                Descricao = descricao;
+                Preco = preco;
+                EmFalta = emFalta;
+            }                   
+        }
+
+        private void ValidarDescricao(string descricao)
+        {
+            if (string.IsNullOrEmpty(descricao))
+            {
+                AddNotification("descricaoSabor", "Por favor digite uma descrição válida");
+            }
+
+            if (!string.IsNullOrEmpty(descricao) && descricao.Length > 500)
+            {
+                AddNotification("descricaoQtdeCharSabor", "Por favor digite uma descrição válida com menos de 500 caracteres");
+            }
+        }
+
+        private void ValidarPreco(decimal preco)
+        {
+            if (preco <= 0)
+            {
+                AddNotification("precoSabor", "Por favor digite um preço válido, maior que zero");
+            }          
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Flunt.Notifications;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HungryPizzaAPI.Models
 {
-    public class Endereco
+    public class Endereco : Notifiable<Notification>
     {      
 
         public int Id { get; private set; }
@@ -25,11 +26,73 @@ namespace HungryPizzaAPI.Models
         }
 
         public Endereco(string rua, string cep, string cidade, string estado)
-        {            
-            Rua = rua;
-            CEP = cep;
-            Cidade = cidade;
-            Estado = estado;            
-        }        
+        {
+            ValidarRua(rua);
+            ValidarCEP(cep);
+            ValidarCidade(cidade);
+            ValidarEstado(estado);
+
+            if (this.IsValid)
+            {
+                Rua = rua;
+                CEP = cep;
+                Cidade = cidade;
+                Estado = estado;
+            }                      
+        }
+
+
+        private void ValidarRua(string rua)
+        {
+            if (string.IsNullOrEmpty(rua))
+            {
+                AddNotification("ruaEndereco", "Por favor digite uma rua válida");
+            }
+
+            if (!string.IsNullOrEmpty(rua) && rua.Length > 5000)
+            {
+                AddNotification("ruaQtdeCharEndereco", "Por favor digite uma rua válida com menos de 5000 caracteres");
+            }
+        }
+
+        private void ValidarCEP(string cep)
+        {
+            if (string.IsNullOrEmpty(cep))
+            {
+                AddNotification("cepEndereco", "Por favor digite um CEP válido");
+            }
+
+            if (!string.IsNullOrEmpty(cep) && cep.Length > 20)
+            {
+                AddNotification("cepQtdeCharEndereco", "Por favor digite um CEP válido com menos de 20 caracteres");
+            }
+        }
+
+        private void ValidarCidade(string cidade)
+        {
+            if (string.IsNullOrEmpty(cidade))
+            {
+                AddNotification("cidadeEndereco", "Por favor digite uma cidade válida");
+            }
+
+            if (!string.IsNullOrEmpty(cidade) && cidade.Length > 1000)
+            {
+                AddNotification("cidadeQtdeCharEndereco", "Por favor digite uma cidade válida com menos de 1000 caracteres");
+            }
+        }
+
+        private void ValidarEstado(string estado)
+        {
+            if (string.IsNullOrEmpty(estado))
+            {
+                AddNotification("estadoEndereco", "Por favor digite um estado válido");
+            }
+
+            if (!string.IsNullOrEmpty(estado) && estado.Length != 2)
+            {
+                AddNotification("estadoQtdeCharEndereco", "Por favor digite um estado válido com 2 caracteres");
+            }
+        }
+
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace HungryPizzaAPI.Models
+﻿using Flunt.Notifications;
+
+namespace HungryPizzaAPI.Models
 {
-    public class Cliente
+    public class Cliente : Notifiable<Notification>
     {
         public int Id { get; private set; }
         public string Nome { get; private set; }
@@ -15,9 +17,37 @@
         }
 
         public Cliente(string nome, int enderecoId)
-        {           
-            Nome = nome;
-            EnderecoId = enderecoId;             
+        {
+            ValidarNome(nome);
+            ValidarEndereco(enderecoId);
+
+            if (this.IsValid) 
+            {
+                Nome = nome;
+                EnderecoId = enderecoId;
+            }                        
+        }
+
+
+        private void ValidarNome(string nome)
+        {
+            if (string.IsNullOrEmpty(nome))
+            {
+                AddNotification("nomeCliente", "Por favor digite um nome válido");
+            }
+
+            if (!string.IsNullOrEmpty(nome) && nome.Length > 5000)
+            {
+                AddNotification("nomeQtdeCharCliente", "Por favor digite um nome válido com menos de 5000 caracteres");
+            }            
+        }
+
+        private void ValidarEndereco(int enderecoId)
+        {
+            if (enderecoId <= 0)
+            {
+                AddNotification("enderecoIdCliente", "É necessário passar um id de endereço válido para o cliente");
+            }
         }
     }
 }
