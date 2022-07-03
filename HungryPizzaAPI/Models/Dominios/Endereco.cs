@@ -1,8 +1,6 @@
 ﻿using Flunt.Notifications;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HungryPizzaAPI.Models
+namespace HungryPizzaAPI.Models.Dominios
 {
     public class Endereco : Notifiable<Notification>
     {      

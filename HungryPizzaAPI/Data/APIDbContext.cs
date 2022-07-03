@@ -1,4 +1,6 @@
-﻿using HungryPizzaAPI.Models;
+﻿using Flunt.Notifications;
+using HungryPizzaAPI.Data.Configuracaoes;
+using HungryPizzaAPI.Models.Persistencias;
 using Microsoft.EntityFrameworkCore;
 
 namespace HungryPizzaAPI.Data
@@ -9,14 +11,14 @@ namespace HungryPizzaAPI.Data
         {
         }
 
-        public DbSet<Sabor> Sabores { get; set; }
-        public DbSet<Pizza> Pizzas { get; set; }
-        public DbSet<Endereco> Enderecos { get; set; }
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Pedido> Pedidos { get; set; }        
+        public DbSet<SaborPersistencia> Sabores { get; set; }
+        public DbSet<PizzaPersistencia> Pizzas { get; set; }
+        public DbSet<EnderecoPersistencia> Enderecos { get; set; }
+        public DbSet<ClientePersistencia> Clientes { get; set; }
+        public DbSet<PedidoPersistencia> Pedidos { get; set; }        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {                     
            modelBuilder.ApplyConfigurationsFromAssembly(typeof(APIDbContext).Assembly);
         }
 

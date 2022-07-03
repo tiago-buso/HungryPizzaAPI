@@ -1,12 +1,12 @@
-﻿using HungryPizzaAPI.Models;
+﻿using HungryPizzaAPI.Models.Persistencias;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HungryPizzaAPI.Data.Configuracaoes
 {
-    public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
+    public class ClienteConfiguration : IEntityTypeConfiguration<ClientePersistencia>
     {
-        public void Configure(EntityTypeBuilder<Cliente> builder)
+        public void Configure(EntityTypeBuilder<ClientePersistencia> builder)
         {
             builder.ToTable("Clientes");
             builder.HasKey(p => p.Id);
@@ -14,7 +14,7 @@ namespace HungryPizzaAPI.Data.Configuracaoes
 
             builder.HasOne(c => c.Endereco)
                 .WithOne(e => e.Cliente)
-                .HasForeignKey<Cliente>(c => c.EnderecoId);
+                .HasForeignKey<ClientePersistencia>(c => c.EnderecoId);
 
         }
     }

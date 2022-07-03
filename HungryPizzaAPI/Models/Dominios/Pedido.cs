@@ -1,6 +1,6 @@
 ﻿using Flunt.Notifications;
 
-namespace HungryPizzaAPI.Models
+namespace HungryPizzaAPI.Models.Dominios
 {
     public class Pedido : Notifiable<Notification>
     {
@@ -62,7 +62,7 @@ namespace HungryPizzaAPI.Models
         {
             if (pizzas == null || (pizzas != null && !pizzas.Any()))
             {
-                ValorTotal = Queryable.Average(Pizzas.Select(x => x.PrecoTotal).AsQueryable());
+                ValorTotal = Queryable.Sum(Pizzas.Select(x => x.PrecoTotal).AsQueryable());
             }
         }
 

@@ -1,10 +1,10 @@
-﻿using HungryPizzaAPI.Models;
+﻿using HungryPizzaAPI.Models.Persistencias;
 
 namespace HungryPizzaAPI.Repositories
 {
     public interface IPedidoRepository
     {
-        Task<int> CriarPedido(Pedido pedido);
-        Task<List<Pedido>> SelecionarPedidosPaginadosPorClienteOrdenadosDataDesc(int clienteId, int skip, int take);
+        Task<int> CriarPedido(PedidoPersistencia pedido);
+        Task<List<PedidoPersistencia>> SelecionarPedidosPaginadosPorClienteOrdenadosDataDesc(int clienteId, int skip, int take);
     }
 }

@@ -1,12 +1,12 @@
-﻿using HungryPizzaAPI.Models;
+﻿using HungryPizzaAPI.Models.Persistencias;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HungryPizzaAPI.Data.Configuracaoes
 {
-    public class EnderecoConfiguration : IEntityTypeConfiguration<Endereco>
+    public class EnderecoConfiguration : IEntityTypeConfiguration<EnderecoPersistencia>
     {
-        public void Configure(EntityTypeBuilder<Endereco> builder)
+        public void Configure(EntityTypeBuilder<EnderecoPersistencia> builder)
         {
             builder.ToTable("Enderecos");
             builder.HasKey(p => p.Id);

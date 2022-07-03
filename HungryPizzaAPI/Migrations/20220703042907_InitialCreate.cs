@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HungryPizzaAPI.Migrations
 {
-    public partial class inicial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,7 +67,7 @@ namespace HungryPizzaAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Data = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ValorTotal = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "NUMERIC(9,2)", nullable: false),
                     EnderecoId = table.Column<int>(type: "int", nullable: true),
                     ClienteId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -92,7 +92,7 @@ namespace HungryPizzaAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrecoTotal = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    PrecoTotal = table.Column<decimal>(type: "NUMERIC(9,2)", nullable: false),
                     PedidoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -106,7 +106,7 @@ namespace HungryPizzaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PizzaSabor",
+                name: "PizzasSabores",
                 columns: table => new
                 {
                     PizzasId = table.Column<int>(type: "int", nullable: false),
@@ -114,15 +114,15 @@ namespace HungryPizzaAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PizzaSabor", x => new { x.PizzasId, x.SaboresId });
+                    table.PrimaryKey("PK_PizzasSabores", x => new { x.PizzasId, x.SaboresId });
                     table.ForeignKey(
-                        name: "FK_PizzaSabor_Pizzas_PizzasId",
+                        name: "FK_PizzasSabores_Pizzas_PizzasId",
                         column: x => x.PizzasId,
                         principalTable: "Pizzas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PizzaSabor_Sabores_SaboresId",
+                        name: "FK_PizzasSabores_Sabores_SaboresId",
                         column: x => x.SaboresId,
                         principalTable: "Sabores",
                         principalColumn: "Id",
@@ -151,15 +151,15 @@ namespace HungryPizzaAPI.Migrations
                 column: "PedidoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PizzaSabor_SaboresId",
-                table: "PizzaSabor",
+                name: "IX_PizzasSabores_SaboresId",
+                table: "PizzasSabores",
                 column: "SaboresId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PizzaSabor");
+                name: "PizzasSabores");
 
             migrationBuilder.DropTable(
                 name: "Pizzas");

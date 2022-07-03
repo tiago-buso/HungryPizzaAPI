@@ -1,6 +1,6 @@
 ﻿using Flunt.Notifications;
 
-namespace HungryPizzaAPI.Models
+namespace HungryPizzaAPI.Models.Dominios
 {
     public class Cliente : Notifiable<Notification>
     {

@@ -1,12 +1,12 @@
-﻿using HungryPizzaAPI.Models;
+﻿using HungryPizzaAPI.Models.Persistencias;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HungryPizzaAPI.Data.Configuracaoes
 {
-    public class SaborConfiguration : IEntityTypeConfiguration<Sabor>
+    public class SaborConfiguration : IEntityTypeConfiguration<SaborPersistencia>
     {
-        public void Configure(EntityTypeBuilder<Sabor> builder)
+        public void Configure(EntityTypeBuilder<SaborPersistencia> builder)
         {
             builder.ToTable("Sabores");
             builder.HasKey(p => p.Id);

@@ -1,5 +1,5 @@
 ﻿using HungryPizzaAPI.Data;
-using HungryPizzaAPI.Models;
+using HungryPizzaAPI.Models.Persistencias;
 using Microsoft.EntityFrameworkCore;
 
 namespace HungryPizzaAPI.Repositories
@@ -13,7 +13,7 @@ namespace HungryPizzaAPI.Repositories
             _context = context;
         }
 
-        public async Task<int> CriarPedido(Pedido pedido)
+        public async Task<int> CriarPedido(PedidoPersistencia pedido)
         {
             if (pedido == null)
             {
@@ -26,9 +26,9 @@ namespace HungryPizzaAPI.Repositories
             return pedido.Id;
         }
 
-        public async Task<List<Pedido>> SelecionarPedidosPaginadosPorClienteOrdenadosDataDesc(int clienteId, int skip, int take)
+        public async Task<List<PedidoPersistencia>> SelecionarPedidosPaginadosPorClienteOrdenadosDataDesc(int clienteId, int skip, int take)
         {
-            return await _context.Pedidos
+            return await _context.Pedidos.Include(pe => pe.Pizzas)
                                  .Where(x => x.ClienteId == clienteId)
                                  .OrderByDescending(x => x.Data)
                                  .Skip(skip)
