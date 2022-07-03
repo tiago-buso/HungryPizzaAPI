@@ -41,7 +41,7 @@ namespace HungryPizzaAPI.Models.Dominios
             }
             else if (sabores != null && sabores.Any(x => x.EmFalta))
             {
-                string saboresEmFalta = String.Join(", ", Sabores.Where(x => x.EmFalta).Select(x => x.Descricao).ToArray());                
+                string saboresEmFalta = String.Join(", ", sabores.Where(x => x.EmFalta).Select(x => x.Descricao).ToArray());                
                 AddNotification("saboresEmFaltaPizza", $"Não é possível criar essa pizza já que existe(m) sabor(es) em falta: {saboresEmFalta}");
             }
         }
