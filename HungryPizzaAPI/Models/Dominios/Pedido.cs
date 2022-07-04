@@ -80,6 +80,11 @@ namespace HungryPizzaAPI.Models.Dominios
             {
                 AddNotification("enderecoOuClientePedido", "É necessário passar ou um endereço ou um cliente para o pedido");
             }
+
+            if (enderecoId.HasValue && clienteId.HasValue)
+            {
+                AddNotification("enderecoEClientePedido", "Passe apenas um cliente, ou um endereço, não os dois parâmetros");
+            }
         }
     }
 }
